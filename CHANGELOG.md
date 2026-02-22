@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/kitti12911/lib-util/compare/v1.1.1...v1.2.0) (2026-02-22)
+
+
+### Features
+
+* add pagination ([ec50e01](https://github.com/kitti12911/lib-util/commit/ec50e0134ce5ce9cafb2d9d61e25c5f9ecf39c05))
+
 ## [1.1.1](https://github.com/kitti12911/lib-util/compare/v1.1.0...v1.1.1) (2026-02-21)
 
 
