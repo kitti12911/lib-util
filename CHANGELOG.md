@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/kitti12911/lib-util/compare/v1.2.0...v1.3.0) (2026-02-24)
+
+
+### Features
+
+* add ptr helper function ([4385f3e](https://github.com/kitti12911/lib-util/commit/4385f3eb03f630ba07c7e5524eebf5203cfbd416))
+
 ## [1.2.0](https://github.com/kitti12911/lib-util/compare/v1.1.1...v1.2.0) (2026-02-22)
 
 
