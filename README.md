@@ -1,6 +1,6 @@
 # lib-util
 
-shared Go utility library used across homelab services. provides config loading, structured logging, tracing, and validation.
+shared Go utility library used across homelab services. provides config loading, structured logging, tracing, validation, and pointer utilities.
 
 ## install
 
@@ -96,6 +96,22 @@ v.RegisterCustom("my_tag", func(fl validator.FieldLevel) bool {
     return fl.Field().String() != ""
 })
 ```
+
+### ptr
+
+pointer helper functions for safely dereferencing pointers with fallback values.
+
+```go
+import "github.com/kitti12911/lib-util/ptr"
+
+name := ptr.ValueOr(input.Name, "unnamed") // returns "unnamed" if input.Name is nil
+limit := ptr.From(input.Limit)             // returns 0 if input.Limit is nil
+```
+
+| function                         | description                                         |
+|----------------------------------|-----------------------------------------------------|
+| `From(p *T) T`                   | dereference pointer, returns zero value of T if nil |
+| `ValueOr(p *T, defaultVal T) T`  | dereference pointer, returns defaultVal if nil      |
 
 ## requirements
 
