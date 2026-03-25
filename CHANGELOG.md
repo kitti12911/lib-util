@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/kitti12911/lib-util/compare/v1.3.0...v1.4.0) (2026-03-25)
+
+
+### Features
+
+* add string formatter package ([7e58bf3](https://github.com/kitti12911/lib-util/commit/7e58bf33daa3912651fd185bf336226a0f461a6a))
+* change json formatter function name to more specify ([4f77dd7](https://github.com/kitti12911/lib-util/commit/4f77dd7aac749789dac5faec015869c36aaded95))
+
 ## [1.3.0](https://github.com/kitti12911/lib-util/compare/v1.2.0...v1.3.0) (2026-02-24)
 
 
