@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func ToJSON(v any, indent bool) (string, error) {
+func ToJSONStr(v any, indent bool) (string, error) {
 	var jsonText []byte
 	var err error
 	if indent {
