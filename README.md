@@ -74,6 +74,39 @@ defer tracing.Shutdown(ctx, tp)
 - sets global tracer provider
 - supports TraceContext and Baggage propagation
 
+### profiling
+
+continuous profiling setup with Pyroscope.
+
+```go
+import "github.com/kitti12911/lib-util/profiling"
+
+profiler, err := profiling.New(
+    "my-service",
+    "http://pyroscope.observability.svc.cluster.local:4040",
+    profiling.WithNamespace("demo"),
+)
+if err != nil {
+    log.Fatal(err)
+}
+defer profiling.Shutdown(profiler)
+```
+
+- exports profiles to pyroscope
+- enables cpu, allocation, in-use heap, and goroutine profiles by default
+- supports custom tags, profile types, logger, basic auth, and tenant id options
+
+options:
+
+| function                    | description                                |
+|-----------------------------|--------------------------------------------|
+| `WithNamespace(namespace)`  | add namespace tag to profiling data        |
+| `WithTags(tags)`            | add or override custom profiling tags      |
+| `WithProfileTypes(types...)`| choose which pyroscope profiles to collect |
+| `WithLogger(logger)`        | set pyroscope client logger                |
+| `WithBasicAuth(user, pass)` | set basic auth for pyroscope               |
+| `WithTenantID(tenantID)`    | set pyroscope tenant id                    |
+
 ### validator
 
 struct validation with structured error reporting. wraps `go-playground/validator/v10`.
