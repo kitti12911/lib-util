@@ -2,6 +2,7 @@ package profiling
 
 import (
 	"fmt"
+	"maps"
 
 	"github.com/grafana/pyroscope-go"
 )
@@ -62,9 +63,7 @@ func WithTags(tags map[string]string) Option {
 			cfg.Tags = make(map[string]string, len(tags))
 		}
 
-		for key, value := range tags {
-			cfg.Tags[key] = value
-		}
+		maps.Copy(cfg.Tags, tags)
 	}
 }
 
