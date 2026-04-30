@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/kitti12911/lib-util/compare/v1.4.0...v1.5.0) (2026-04-30)
+
+
+### Features
+
+* upgrade dependencies ([4501ce7](https://github.com/kitti12911/lib-util/commit/4501ce7d6c0d47856704bc03a2f079324e63cc82))
+
 ## [1.4.0](https://github.com/kitti12911/lib-util/compare/v1.3.0...v1.4.0) (2026-03-25)
 
 
