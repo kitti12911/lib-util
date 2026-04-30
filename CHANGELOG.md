@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/kitti12911/lib-util/compare/v1.5.0...v1.6.0) (2026-04-30)
+
+
+### Features
+
+* upgrade semconv to v1.40.0 ([ef56f58](https://github.com/kitti12911/lib-util/commit/ef56f584bfab2b1ad5ac3b5f4b35b390d1b63353))
+
 ## [1.5.0](https://github.com/kitti12911/lib-util/compare/v1.4.0...v1.5.0) (2026-04-30)
 
 
