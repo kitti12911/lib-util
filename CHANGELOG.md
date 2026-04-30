@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/kitti12911/lib-util/compare/v1.6.0...v1.7.0) (2026-04-30)
+
+
+### Features
+
+* add go fix command to make ([6e3ac06](https://github.com/kitti12911/lib-util/commit/6e3ac0608c2bbe7c050659f47c12cef82ac77d0e))
+* add profiling pkg ([49dea82](https://github.com/kitti12911/lib-util/commit/49dea82bf89e5028c8900e73cec0a9d20c24fd8c))
+
 ## [1.6.0](https://github.com/kitti12911/lib-util/compare/v1.5.0...v1.6.0) (2026-04-30)
 
 
