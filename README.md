@@ -1,12 +1,16 @@
 # lib-util
 
-shared Go utility library used across homelab services. provides config loading, structured logging, tracing, validation, and pointer utilities.
+shared Go utility library used across homelab services. provides config loading, structured logging, validation, pagination, formatting, and pointer utilities.
 
 ## install
 
 ```bash
 go get github.com/kitti12911/lib-util
 ```
+
+## observability
+
+profiling and tracing now live in `github.com/kitti12911/lib-monitor`. use `github.com/kitti12911/lib-monitor/profiling` and `github.com/kitti12911/lib-monitor/tracing` for new code.
 
 ## packages
 
@@ -49,63 +53,12 @@ slog.Info("server started", "port", 8080)
 
 options:
 
-| function            | description                                |
-|---------------------|--------------------------------------------|
-| `WithLevel(level)`  | set log level (debug, info, warn, error)   |
-| `WithServiceName(n)`| add service name to all log entries        |
-| `WithSource()`      | include source file and line in logs       |
-| `WithTrace()`       | add trace_id and span_id from opentelemetry|
-
-### tracing
-
-opentelemetry tracing setup with OTLP gRPC exporter.
-
-```go
-import "github.com/kitti12911/lib-util/tracing"
-
-tp, err := tracing.New(ctx, "my-service", "localhost:4317")
-if err != nil {
-    log.Fatal(err)
-}
-defer tracing.Shutdown(ctx, tp)
-```
-
-- exports traces via OTLP gRPC (e.g. to alloy, otel collector)
-- sets global tracer provider
-- supports TraceContext and Baggage propagation
-
-### profiling
-
-continuous profiling setup with Pyroscope.
-
-```go
-import "github.com/kitti12911/lib-util/profiling"
-
-profiler, err := profiling.New(
-    "my-service",
-    "http://pyroscope.observability.svc.cluster.local:4040",
-    profiling.WithNamespace("demo"),
-)
-if err != nil {
-    log.Fatal(err)
-}
-defer profiling.Shutdown(profiler)
-```
-
-- exports profiles to pyroscope
-- enables cpu, allocation, in-use heap, and goroutine profiles by default
-- supports custom tags, profile types, logger, basic auth, and tenant id options
-
-options:
-
-| function                    | description                                |
-|-----------------------------|--------------------------------------------|
-| `WithNamespace(namespace)`  | add namespace tag to profiling data        |
-| `WithTags(tags)`            | add or override custom profiling tags      |
-| `WithProfileTypes(types...)`| choose which pyroscope profiles to collect |
-| `WithLogger(logger)`        | set pyroscope client logger                |
-| `WithBasicAuth(user, pass)` | set basic auth for pyroscope               |
-| `WithTenantID(tenantID)`    | set pyroscope tenant id                    |
+| function              | description                                  |
+| --------------------- | -------------------------------------------- |
+| `WithLevel(level)`    | set log level (debug, info, warn, error)     |
+| `WithServiceName(n)`  | add service name to all log entries          |
+| `WithSource()`        | include source file and line in logs         |
+| `WithTrace()`         | add trace_id and span_id from opentelemetry  |
 
 ### validator
 
@@ -130,6 +83,37 @@ v.RegisterCustom("my_tag", func(fl validator.FieldLevel) bool {
 })
 ```
 
+### formatter
+
+JSON formatting helpers for debug output, logs, and safe string conversion.
+
+```go
+import "github.com/kitti12911/lib-util/formatter"
+
+text, err := formatter.ToJSONStr(payload, true) // pretty-printed JSON
+```
+
+| function                    | description                           |
+| --------------------------- | ------------------------------------- |
+| `ToJSONStr(v, indent)`      | marshal a value into a JSON string    |
+
+### pagination
+
+small helpers for converting page/pageSize input into limit/offset and response metadata.
+
+```go
+import "github.com/kitti12911/lib-util/pagination"
+
+input := pagination.ParseInput(page, pageSize)
+items, total, err := repo.Find(ctx, input.Limit, input.Offset)
+output := pagination.CalcOutput(page, pageSize, total)
+```
+
+| function                            | description                                  |
+| ----------------------------------- | -------------------------------------------- |
+| `ParseInput(page, pageSize)`        | normalize page input into limit and offset   |
+| `CalcOutput(page, pageSize, total)` | calculate response pagination metadata       |
+
 ### ptr
 
 pointer helper functions for safely dereferencing pointers with fallback values.
@@ -141,14 +125,14 @@ name := ptr.ValueOr(input.Name, "unnamed") // returns "unnamed" if input.Name is
 limit := ptr.From(input.Limit)             // returns 0 if input.Limit is nil
 ```
 
-| function                         | description                                         |
-|----------------------------------|-----------------------------------------------------|
-| `From(p *T) T`                   | dereference pointer, returns zero value of T if nil |
-| `ValueOr(p *T, defaultVal T) T`  | dereference pointer, returns defaultVal if nil      |
+| function                           | description                                           |
+| ---------------------------------- | ----------------------------------------------------- |
+| `From(p *T) T`                     | dereference pointer, returns zero value of T if nil   |
+| `ValueOr(p *T, defaultVal T) T`    | dereference pointer, returns defaultVal if nil        |
 
 ## requirements
 
-- go 1.26.0 or higher
+- go 1.26 or higher
 
 ## available commands
 
