@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/kitti12911/lib-util/compare/v1.7.0...v2.0.0) (2026-05-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* move tracing and profiling to https://github.com/kitti12911/lib-monitor, update README.md, add renovate, release please, and CODEOWNERS
+
+### Features
+
+* move tracing and profiling to https://github.com/kitti12911/lib-monitor, update README.md, add renovate, release please, and CODEOWNERS ([1ba7765](https://github.com/kitti12911/lib-util/commit/1ba7765ca2dbff6b2c77977a53156fe204543d5e))
+
 ## [1.7.0](https://github.com/kitti12911/lib-util/compare/v1.6.0...v1.7.0) (2026-04-30)
 
 
