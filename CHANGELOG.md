@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/kitti12911/lib-util/compare/v2.0.2...v2.1.0) (2026-05-02)
+
+
+### Features
+
+* add 'NewFromConfig' for built-in config ([6f53f1e](https://github.com/kitti12911/lib-util/commit/6f53f1e4a6550f13bad99b489b51db4ceeed0d5a))
+
 ## [2.0.2](https://github.com/kitti12911/lib-util/compare/v2.0.1...v2.0.2) (2026-05-02)
 
 
