@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/kitti12911/lib-util/compare/v2.0.0...v2.0.1) (2026-05-02)
+
+
+### Bug Fixes
+
+* update module to correct version ([a3e961c](https://github.com/kitti12911/lib-util/commit/a3e961ca69d9cf01532e0cd2c326cbb856ebd84a))
+
 ## [2.0.0](https://github.com/kitti12911/lib-util/compare/v1.7.0...v2.0.0) (2026-05-01)
 
 
