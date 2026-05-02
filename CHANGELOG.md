@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/kitti12911/lib-util/compare/v2.0.1...v2.0.2) (2026-05-02)
+
+
+### Bug Fixes
+
+* fix wrong import path ([b248635](https://github.com/kitti12911/lib-util/commit/b2486356b2f388d46437ae5b32071566f79f5589))
+
 ## [2.0.1](https://github.com/kitti12911/lib-util/compare/v2.0.0...v2.0.1) (2026-05-02)
 
 
