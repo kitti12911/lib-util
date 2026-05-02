@@ -53,12 +53,12 @@ slog.Info("server started", "port", 8080)
 
 options:
 
-| function              | description                                  |
-| --------------------- | -------------------------------------------- |
-| `WithLevel(level)`    | set log level (debug, info, warn, error)     |
-| `WithServiceName(n)`  | add service name to all log entries          |
-| `WithSource()`        | include source file and line in logs         |
-| `WithTrace()`         | add trace_id and span_id from opentelemetry  |
+| function             | description                                 |
+| -------------------- | ------------------------------------------- |
+| `WithLevel(level)`   | set log level (debug, info, warn, error)    |
+| `WithServiceName(n)` | add service name to all log entries         |
+| `WithSource()`       | include source file and line in logs        |
+| `WithTrace()`        | add trace_id and span_id from opentelemetry |
 
 ### validator
 
@@ -93,9 +93,9 @@ import "github.com/kitti12911/lib-util/formatter"
 text, err := formatter.ToJSONStr(payload, true) // pretty-printed JSON
 ```
 
-| function                    | description                           |
-| --------------------------- | ------------------------------------- |
-| `ToJSONStr(v, indent)`      | marshal a value into a JSON string    |
+| function               | description                        |
+| ---------------------- | ---------------------------------- |
+| `ToJSONStr(v, indent)` | marshal a value into a JSON string |
 
 ### pagination
 
@@ -109,10 +109,10 @@ items, total, err := repo.Find(ctx, input.Limit, input.Offset)
 output := pagination.CalcOutput(page, pageSize, total)
 ```
 
-| function                            | description                                  |
-| ----------------------------------- | -------------------------------------------- |
-| `ParseInput(page, pageSize)`        | normalize page input into limit and offset   |
-| `CalcOutput(page, pageSize, total)` | calculate response pagination metadata       |
+| function                            | description                                |
+| ----------------------------------- | ------------------------------------------ |
+| `ParseInput(page, pageSize)`        | normalize page input into limit and offset |
+| `CalcOutput(page, pageSize, total)` | calculate response pagination metadata     |
 
 ### ptr
 
@@ -125,10 +125,10 @@ name := ptr.ValueOr(input.Name, "unnamed") // returns "unnamed" if input.Name is
 limit := ptr.From(input.Limit)             // returns 0 if input.Limit is nil
 ```
 
-| function                           | description                                           |
-| ---------------------------------- | ----------------------------------------------------- |
-| `From(p *T) T`                     | dereference pointer, returns zero value of T if nil   |
-| `ValueOr(p *T, defaultVal T) T`    | dereference pointer, returns defaultVal if nil        |
+| function                        | description                                         |
+| ------------------------------- | --------------------------------------------------- |
+| `From(p *T) T`                  | dereference pointer, returns zero value of T if nil |
+| `ValueOr(p *T, defaultVal T) T` | dereference pointer, returns defaultVal if nil      |
 
 ## requirements
 
