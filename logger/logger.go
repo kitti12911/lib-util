@@ -37,6 +37,12 @@ type Options struct {
 	EnableTrace bool
 }
 
+type Config struct {
+	Level          Level `mapstructure:"level"            env:"LOG_LEVEL"            validate:"oneof=debug info warn error"`
+	AddSource      bool  `mapstructure:"add_source"       env:"LOG_ADD_SOURCE"`
+	IncludeTraceID bool  `mapstructure:"include_trace_id" env:"LOG_INCLUDE_TRACE_ID"`
+}
+
 type Option func(*Options)
 
 func WithLevel(level Level) Option {
@@ -61,6 +67,26 @@ func WithTrace() Option {
 	return func(o *Options) {
 		o.EnableTrace = true
 	}
+}
+
+func NewFromConfig(cfg Config, serviceName string) *slog.Logger {
+	opts := []Option{
+		WithLevel(cfg.Level),
+	}
+
+	if serviceName != "" {
+		opts = append(opts, WithServiceName(serviceName))
+	}
+
+	if cfg.AddSource {
+		opts = append(opts, WithSource())
+	}
+
+	if cfg.IncludeTraceID {
+		opts = append(opts, WithTrace())
+	}
+
+	return New(opts...)
 }
 
 // New creates a new JSON-formatted slog.Logger with the given options.

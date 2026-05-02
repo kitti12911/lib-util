@@ -41,12 +41,11 @@ structured JSON logging built on Go's `slog`. supports opentelemetry trace conte
 ```go
 import "github.com/kitti12911/lib-util/v2/logger"
 
-logger.New(
-    logger.WithLevel(logger.LevelInfo),
-    logger.WithServiceName("my-service"),
-    logger.WithSource(),
-    logger.WithTrace(),
-)
+logger.NewFromConfig(logger.Config{
+    Level:          logger.LevelInfo,
+    AddSource:      true,
+    IncludeTraceID: true,
+}, "my-service")
 
 slog.Info("server started", "port", 8080)
 ```
