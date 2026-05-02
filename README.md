@@ -5,7 +5,7 @@ shared Go utility library used across homelab services. provides config loading,
 ## install
 
 ```bash
-go get github.com/kitti12911/lib-util
+go get github.com/kitti12911/lib-util/v2
 ```
 
 ## observability
@@ -19,7 +19,7 @@ profiling and tracing now live in `github.com/kitti12911/lib-monitor`. use `gith
 type-safe config loading from file with environment variable overrides and validation.
 
 ```go
-import libconfig "github.com/kitti12911/lib-util/config"
+import libconfig "github.com/kitti12911/lib-util/v2/config"
 
 type Config struct {
     Port int    `mapstructure:"port" env:"PORT" validate:"required"`
@@ -39,7 +39,7 @@ cfg, err := libconfig.Load[Config]("config.yml")
 structured JSON logging built on Go's `slog`. supports opentelemetry trace context injection.
 
 ```go
-import "github.com/kitti12911/lib-util/logger"
+import "github.com/kitti12911/lib-util/v2/logger"
 
 logger.New(
     logger.WithLevel(logger.LevelInfo),
@@ -65,7 +65,7 @@ options:
 struct validation with structured error reporting. wraps `go-playground/validator/v10`.
 
 ```go
-import libvalidator "github.com/kitti12911/lib-util/validator"
+import libvalidator "github.com/kitti12911/lib-util/v2/validator"
 
 v := libvalidator.New()
 
@@ -88,7 +88,7 @@ v.RegisterCustom("my_tag", func(fl validator.FieldLevel) bool {
 JSON formatting helpers for debug output, logs, and safe string conversion.
 
 ```go
-import "github.com/kitti12911/lib-util/formatter"
+import "github.com/kitti12911/lib-util/v2/formatter"
 
 text, err := formatter.ToJSONStr(payload, true) // pretty-printed JSON
 ```
@@ -102,7 +102,7 @@ text, err := formatter.ToJSONStr(payload, true) // pretty-printed JSON
 small helpers for converting page/pageSize input into limit/offset and response metadata.
 
 ```go
-import "github.com/kitti12911/lib-util/pagination"
+import "github.com/kitti12911/lib-util/v2/pagination"
 
 input := pagination.ParseInput(page, pageSize)
 items, total, err := repo.Find(ctx, input.Limit, input.Offset)
@@ -119,7 +119,7 @@ output := pagination.CalcOutput(page, pageSize, total)
 pointer helper functions for safely dereferencing pointers with fallback values.
 
 ```go
-import "github.com/kitti12911/lib-util/ptr"
+import "github.com/kitti12911/lib-util/v2/ptr"
 
 name := ptr.ValueOr(input.Name, "unnamed") // returns "unnamed" if input.Name is nil
 limit := ptr.From(input.Limit)             // returns 0 if input.Limit is nil
