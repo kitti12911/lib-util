@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/kitti12911/lib-util/compare/v3.0.0...v3.0.1) (2026-05-03)
+
+
+### Bug Fixes
+
+* fix module name to /v3 ([f241976](https://github.com/kitti12911/lib-util/commit/f241976ee729948325b3e2e56b955e3ffd635530))
+
 ## [3.0.0](https://github.com/kitti12911/lib-util/compare/v2.3.0...v3.0.0) (2026-05-03)
 
 
