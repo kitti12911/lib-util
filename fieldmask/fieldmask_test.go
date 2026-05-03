@@ -1,9 +1,10 @@
 package fieldmask
 
 import (
-	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -21,27 +22,56 @@ func TestValidateMaskAllowsNestedLeafFields(t *testing.T) {
 		"created_at": true,
 		"updated_at": true,
 	})
-	if err != nil {
-		t.Fatalf("ValidateMask() error = %v", err)
-	}
+	require.NoError(t, err)
 }
 
 func TestValidateMaskRejectsMessageFieldWithLeafPathMessage(t *testing.T) {
 	err := ValidateMask(&fieldmaskpb.FieldMask{Paths: []string{"profile"}}, testUserMessage(t), nil)
-	if err == nil {
-		t.Fatal("ValidateMask() error = nil")
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "specify a leaf field path")
+}
+
+func TestValidateMaskRejectsMissingMask(t *testing.T) {
+	tests := []struct {
+		name string
+		mask *fieldmaskpb.FieldMask
+	}{
+		{
+			name: "nil mask",
+			mask: nil,
+		},
+		{
+			name: "empty paths",
+			mask: &fieldmaskpb.FieldMask{},
+		},
 	}
-	if !strings.Contains(err.Error(), "specify a leaf field path") {
-		t.Fatalf("ValidateMask() error = %v, want leaf path message", err)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := ValidateMask(tt.mask, testUserMessage(t), nil)
+
+			require.Error(t, err)
+			assert.ErrorContains(t, err, "update_mask is required")
+		})
 	}
+}
+
+func TestValidateMaskRejectsNilMessage(t *testing.T) {
+	err := ValidateMask(&fieldmaskpb.FieldMask{Paths: []string{"email"}}, nil, nil)
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "message is required")
 }
 
 func TestValidateMaskRejectsUnsupportedPaths(t *testing.T) {
 	tests := []string{
+		"",
 		"id",
 		"created_at",
 		"updated_at",
 		"profile.address.unknown",
+		"profile.unknown.value",
+		"email.value",
 	}
 
 	for _, path := range tests {
@@ -51,11 +81,33 @@ func TestValidateMaskRejectsUnsupportedPaths(t *testing.T) {
 				"created_at": true,
 				"updated_at": true,
 			})
-			if err == nil {
-				t.Fatal("ValidateMask() error = nil")
-			}
+			require.Error(t, err)
 		})
 	}
+}
+
+func TestExtractChangesReturnsNilForEmptyPath(t *testing.T) {
+	changes := ExtractChanges(&fieldmaskpb.FieldMask{Paths: []string{""}}, testUserMessage(t))
+
+	assertChange(t, changes, "", nil)
+}
+
+func TestExtractChangesReturnsNilForInvalidPaths(t *testing.T) {
+	user := testUserMessage(t)
+	profile := dynamicpb.NewMessage(field(user.Descriptor(), "profile").Message())
+	user.Set(field(user.Descriptor(), "profile"), protoreflect.ValueOfMessage(profile))
+
+	changes := ExtractChanges(&fieldmaskpb.FieldMask{Paths: []string{
+		"unknown",
+		"profile.unknown.value",
+		"email.value",
+		"profile.first_name",
+	}}, user)
+
+	assertChange(t, changes, "unknown", nil)
+	assertChange(t, changes, "profile.unknown.value", nil)
+	assertChange(t, changes, "email.value", nil)
+	assertChange(t, changes, "profile.first_name", nil)
 }
 
 func TestExtractChangesSupportsNestedFields(t *testing.T) {
@@ -94,22 +146,19 @@ func TestExtractChangesCanClearOptionalLeaf(t *testing.T) {
 		"profile.address.line2",
 	}}, user)
 
-	if got, ok := changes["profile.address.line2"]; !ok || got != nil {
-		t.Fatalf("changes[profile.address.line2] = %#v, %t; want nil, true", got, ok)
-	}
+	got, ok := changes["profile.address.line2"]
+	require.True(t, ok)
+	assert.Nil(t, got)
 }
 
 func TestExtractChangesWithNilInputsReturnsEmptyChanges(t *testing.T) {
-	if got := ExtractChanges(nil, testUserMessage(t)); len(got) != 0 {
-		t.Fatalf("ExtractChanges(nil, msg) len = %d, want 0", len(got))
-	}
-	if got := ExtractChanges(&fieldmaskpb.FieldMask{Paths: []string{"email"}}, nil); len(got) != 0 {
-		t.Fatalf("ExtractChanges(mask, nil) len = %d, want 0", len(got))
-	}
+	assert.Empty(t, ExtractChanges(nil, testUserMessage(t)))
+	assert.Empty(t, ExtractChanges(&fieldmaskpb.FieldMask{Paths: []string{"email"}}, nil))
 }
 
 func TestExtractNestedChangesReturnsRootFields(t *testing.T) {
 	changes := map[string]any{
+		"":                             "ignored",
 		"email":                        "a@example.com",
 		"username":                     "alice",
 		"profile.first_name":           "Alice",
@@ -123,9 +172,7 @@ func TestExtractNestedChangesReturnsRootFields(t *testing.T) {
 
 	assertChange(t, got, "email", "a@example.com")
 	assertChange(t, got, "username", "alice")
-	if len(got) != 2 {
-		t.Fatalf("ExtractNestedChanges() len = %d, want 2", len(got))
-	}
+	assert.Len(t, got, 2)
 }
 
 func TestExtractNestedChangesReturnsDirectNestedFields(t *testing.T) {
@@ -143,9 +190,7 @@ func TestExtractNestedChangesReturnsDirectNestedFields(t *testing.T) {
 
 	assertChange(t, got, "first_name", "Alice")
 	assertChange(t, got, "last_name", "Example")
-	if len(got) != 2 {
-		t.Fatalf("ExtractNestedChanges() len = %d, want 2", len(got))
-	}
+	assert.Len(t, got, 2)
 }
 
 func TestExtractNestedChangesReturnsDeepNestedFields(t *testing.T) {
@@ -162,9 +207,7 @@ func TestExtractNestedChangesReturnsDeepNestedFields(t *testing.T) {
 
 	assertChange(t, got, "city", "Bangkok")
 	assertChange(t, got, "country_code", "TH")
-	if len(got) != 2 {
-		t.Fatalf("ExtractNestedChanges() len = %d, want 2", len(got))
-	}
+	assert.Len(t, got, 2)
 }
 
 func TestExtractNestedChangesCanRenameFields(t *testing.T) {
@@ -179,16 +222,28 @@ func TestExtractNestedChangesCanRenameFields(t *testing.T) {
 	assertChange(t, got, "phone", "+66123456789")
 }
 
+func TestExtractNestedChangesIgnoresUnmappedFields(t *testing.T) {
+	changes := map[string]any{
+		"profile.first_name": "Alice",
+	}
+
+	got := ExtractNestedChanges(changes, map[string]string{
+		"last_name": "last_name",
+	}, "profile")
+
+	assert.Empty(t, got)
+}
+
 func testUserMessage(t *testing.T) *dynamicpb.Message {
 	t.Helper()
 
 	file := &descriptorpb.FileDescriptorProto{
-		Syntax:  stringPtr("proto2"),
-		Name:    stringPtr("test.proto"),
-		Package: stringPtr("test.v1"),
+		Syntax:  new("proto2"),
+		Name:    new("test.proto"),
+		Package: new("test.v1"),
 		MessageType: []*descriptorpb.DescriptorProto{
 			{
-				Name: stringPtr("User"),
+				Name: new("User"),
 				Field: []*descriptorpb.FieldDescriptorProto{
 					stringField("id", 1),
 					stringField("email", 2),
@@ -200,7 +255,7 @@ func testUserMessage(t *testing.T) *dynamicpb.Message {
 				},
 			},
 			{
-				Name: stringPtr("Profile"),
+				Name: new("Profile"),
 				Field: []*descriptorpb.FieldDescriptorProto{
 					stringField("first_name", 1),
 					stringField("last_name", 2),
@@ -209,7 +264,7 @@ func testUserMessage(t *testing.T) *dynamicpb.Message {
 				},
 			},
 			{
-				Name: stringPtr("Address"),
+				Name: new("Address"),
 				Field: []*descriptorpb.FieldDescriptorProto{
 					stringField("line2", 1),
 					stringField("city", 2),
@@ -220,17 +275,15 @@ func testUserMessage(t *testing.T) *dynamicpb.Message {
 	}
 
 	desc, err := protodesc.NewFile(file, nil)
-	if err != nil {
-		t.Fatalf("protodesc.NewFile() error = %v", err)
-	}
+	require.NoError(t, err)
 
 	return dynamicpb.NewMessage(desc.Messages().ByName("User"))
 }
 
 func stringField(name string, number int32) *descriptorpb.FieldDescriptorProto {
 	return &descriptorpb.FieldDescriptorProto{
-		Name:   stringPtr(name),
-		Number: int32Ptr(number),
+		Name:   new(name),
+		Number: new(number),
 		Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
 		Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 	}
@@ -238,11 +291,11 @@ func stringField(name string, number int32) *descriptorpb.FieldDescriptorProto {
 
 func messageField(name string, number int32, typeName string) *descriptorpb.FieldDescriptorProto {
 	return &descriptorpb.FieldDescriptorProto{
-		Name:     stringPtr(name),
-		Number:   int32Ptr(number),
+		Name:     new(name),
+		Number:   new(number),
 		Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
 		Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		TypeName: stringPtr(typeName),
+		TypeName: new(typeName),
 	}
 }
 
@@ -254,22 +307,10 @@ func field(desc protoreflect.MessageDescriptor, name string) protoreflect.FieldD
 	return desc.Fields().ByName(protoreflect.Name(name))
 }
 
-func stringPtr(value string) *string {
-	return &value
-}
-
-func int32Ptr(value int32) *int32 {
-	return &value
-}
-
 func assertChange(t *testing.T, changes map[string]any, key string, want any) {
 	t.Helper()
 
 	got, ok := changes[key]
-	if !ok {
-		t.Fatalf("changes[%s] is missing", key)
-	}
-	if got != want {
-		t.Fatalf("changes[%s] = %#v, want %#v", key, got, want)
-	}
+	require.True(t, ok, "changes[%s] is missing", key)
+	assert.Equal(t, want, got)
 }

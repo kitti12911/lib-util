@@ -103,14 +103,10 @@ func descriptorFieldByPath(root protoreflect.MessageDescriptor, path string) (pr
 
 	descriptor := root
 	parts := strings.Split(path, ".")
-	for i, part := range parts {
+	for _, part := range parts[:len(parts)-1] {
 		fd := descriptor.Fields().ByName(protoreflect.Name(part))
 		if fd == nil {
 			return nil, false
-		}
-
-		if i == len(parts)-1 {
-			return fd, true
 		}
 
 		if !isMessage(fd) {
@@ -119,7 +115,12 @@ func descriptorFieldByPath(root protoreflect.MessageDescriptor, path string) (pr
 		descriptor = fd.Message()
 	}
 
-	return nil, false
+	fd := descriptor.Fields().ByName(protoreflect.Name(parts[len(parts)-1]))
+	if fd == nil {
+		return nil, false
+	}
+
+	return fd, true
 }
 
 func valueByPath(root protoreflect.Message, path string) any {
@@ -129,17 +130,10 @@ func valueByPath(root protoreflect.Message, path string) any {
 
 	ref := root
 	parts := strings.Split(path, ".")
-	for i, part := range parts {
+	for _, part := range parts[:len(parts)-1] {
 		fd := ref.Descriptor().Fields().ByName(protoreflect.Name(part))
 		if fd == nil {
 			return nil
-		}
-
-		if i == len(parts)-1 {
-			if fd.HasPresence() && !ref.Has(fd) {
-				return nil
-			}
-			return ref.Get(fd).Interface()
 		}
 
 		if !isMessage(fd) || !ref.Has(fd) {
@@ -148,7 +142,14 @@ func valueByPath(root protoreflect.Message, path string) any {
 		ref = ref.Get(fd).Message()
 	}
 
-	return nil
+	fd := ref.Descriptor().Fields().ByName(protoreflect.Name(parts[len(parts)-1]))
+	if fd == nil {
+		return nil
+	}
+	if fd.HasPresence() && !ref.Has(fd) {
+		return nil
+	}
+	return ref.Get(fd).Interface()
 }
 
 func isMessage(fd protoreflect.FieldDescriptor) bool {

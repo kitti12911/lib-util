@@ -1,6 +1,7 @@
 package validator
 
 import (
+	"errors"
 	"reflect"
 	"strings"
 
@@ -48,7 +49,7 @@ func (val *Validator) ValidateWithErrors(s any) ([]FieldViolation, error) {
 		return nil, nil
 	}
 
-	ve, ok := err.(ValidationErrors)
+	ve, ok := errors.AsType[ValidationErrors](err)
 	if !ok {
 		return nil, err
 	}
