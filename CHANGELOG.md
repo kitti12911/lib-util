@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/kitti12911/lib-util/compare/v2.3.0...v3.0.0) (2026-05-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* move 'fieldmapgen' to https://github.com/kitti12911/lib-orm
+
+### Features
+
+* move 'fieldmapgen' to https://github.com/kitti12911/lib-orm ([d99f80b](https://github.com/kitti12911/lib-util/commit/d99f80b6afda990838f03083b1ead3da45d02d68))
+
 ## [2.3.0](https://github.com/kitti12911/lib-util/compare/v2.2.1...v2.3.0) (2026-05-03)
 
 
