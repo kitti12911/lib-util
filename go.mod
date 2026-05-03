@@ -1,4 +1,4 @@
-module github.com/kitti12911/lib-util/v2
+module github.com/kitti12911/lib-util/v3
 
 go 1.26.2
 

@@ -8,7 +8,7 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/kitti12911/lib-util/v2/validator"
+	"github.com/kitti12911/lib-util/v3/validator"
 )
 
 // Load reads a config file into T, overrides fields that have an `env` struct tag
