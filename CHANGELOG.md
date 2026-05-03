@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.0](https://github.com/kitti12911/lib-util/compare/v2.2.1...v2.3.0) (2026-05-03)
+
+
+### Features
+
+* add test cases ([bfb2ae0](https://github.com/kitti12911/lib-util/commit/bfb2ae05eb99c55753506eee06f26585e6d8d8e2))
+* add test coverage for 'fieldmapgen' ([870de55](https://github.com/kitti12911/lib-util/commit/870de5594c7d44467afe1a89f23f1100675a2639))
+
 ## [2.2.1](https://github.com/kitti12911/lib-util/compare/v2.2.0...v2.2.1) (2026-05-03)
 
 
