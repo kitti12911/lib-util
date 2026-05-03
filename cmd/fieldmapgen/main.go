@@ -8,6 +8,7 @@ import (
 	"go/format"
 	"go/parser"
 	"go/token"
+	"maps"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -160,9 +161,7 @@ func parseModelDir(dir string) (map[string]model, error) {
 		if err != nil {
 			return nil, err
 		}
-		for name, model := range fileModels {
-			models[name] = model
-		}
+		maps.Copy(models, fileModels)
 	}
 
 	return models, nil
@@ -183,11 +182,7 @@ func parseModelFile(path string) (map[string]model, error) {
 		}
 
 		for _, spec := range gen.Specs {
-			typeSpec, ok := spec.(*ast.TypeSpec)
-			if !ok {
-				continue
-			}
-
+			typeSpec := spec.(*ast.TypeSpec)
 			strct, ok := typeSpec.Type.(*ast.StructType)
 			if !ok {
 				continue
@@ -257,7 +252,7 @@ func structTag(field *ast.Field) reflect.StructTag {
 }
 
 func tagOptionValue(tag string, key string) string {
-	for _, opt := range strings.Split(tag, ",") {
+	for opt := range strings.SplitSeq(tag, ",") {
 		if value, ok := strings.CutPrefix(opt, key+":"); ok {
 			return value
 		}
@@ -266,7 +261,7 @@ func tagOptionValue(tag string, key string) string {
 }
 
 func isChildRelation(tag string) bool {
-	for _, opt := range strings.Split(tag, ",") {
+	for opt := range strings.SplitSeq(tag, ",") {
 		switch opt {
 		case "rel:has-many", "rel:has-one":
 			return true
