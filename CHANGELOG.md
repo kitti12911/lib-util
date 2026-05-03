@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/kitti12911/lib-util/compare/v2.1.0...v2.2.0) (2026-05-03)
+
+
+### Features
+
+* add field mask helper function and field map generator ([61f9e71](https://github.com/kitti12911/lib-util/commit/61f9e71cd247e18b27492004cb4fa889a3db9fca))
+
 ## [2.1.0](https://github.com/kitti12911/lib-util/compare/v2.0.2...v2.1.0) (2026-05-02)
 
 
