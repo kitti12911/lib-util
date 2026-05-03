@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/kitti12911/lib-util/compare/v2.2.0...v2.2.1) (2026-05-03)
+
+
+### Bug Fixes
+
+* fix CGO_ENABLE -&gt; CGO_ENABLED ([7130340](https://github.com/kitti12911/lib-util/commit/7130340e9e1fe123fb1080a1bcc906a3fe6e789e))
+
 ## [2.2.0](https://github.com/kitti12911/lib-util/compare/v2.1.0...v2.2.0) (2026-05-03)
 
 
