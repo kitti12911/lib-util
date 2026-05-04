@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/kitti12911/lib-util/compare/v3.3.0...v3.4.0) (2026-05-04)
+
+
+### Features
+
+* add validation pipeline ([dc8c14d](https://github.com/kitti12911/lib-util/commit/dc8c14dfafb3f5011e46a60fcf6e5e7416e7dc60))
+
 ## [3.3.0](https://github.com/kitti12911/lib-util/compare/v3.2.0...v3.3.0) (2026-05-04)
 
 
