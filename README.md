@@ -175,11 +175,17 @@ limit := ptr.From(input.Limit)             // returns 0 if input.Limit is nil
 
 - go 1.26 or higher
 
+Optional:
+
+- [prettier](https://prettier.io/) for Markdown, YAML, JSON, and JSONC formatting
+
 ## available commands
 
 ```bash
 make tidy       # go mod tidy
 make fmt        # format code
+make pretty     # format docs and config with Prettier
+make format     # run fmt and pretty
 make test       # run tests with race detector
 make cov        # run tests with coverage report
 ```
