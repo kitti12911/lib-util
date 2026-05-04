@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/kitti12911/lib-util/compare/v3.1.0...v3.2.0) (2026-05-04)
+
+
+### Features
+
+* add 'huma' patch function ([c1fcf94](https://github.com/kitti12911/lib-util/commit/c1fcf94b2b697680f8266dbfcb2e7695e30ab404))
+
 ## [3.1.0](https://github.com/kitti12911/lib-util/compare/v3.0.1...v3.1.0) (2026-05-04)
 
 
