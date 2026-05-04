@@ -52,7 +52,7 @@ func FilterOpFromString[O ~int32](op string) O {
 }
 
 func OrderDirectionFromString[O ~int32](direction string) O {
-	if strings.ToLower(direction) == "desc" {
+	if strings.EqualFold(direction, "desc") {
 		return O(OrderDirectionDesc)
 	}
 	return O(OrderDirectionAsc)

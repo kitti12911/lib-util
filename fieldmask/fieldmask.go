@@ -71,7 +71,7 @@ func ExtractNestedChanges(changes map[string]any, fields map[string]string, nest
 	return out
 }
 
-func fieldNameForNestedPath(path string, nestedName string) (string, bool) {
+func fieldNameForNestedPath(path, nestedName string) (string, bool) {
 	if path == "" {
 		return "", false
 	}

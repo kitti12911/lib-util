@@ -23,7 +23,8 @@ type customConfig struct {
 func TestValidate(t *testing.T) {
 	val := New()
 	err := val.RegisterCustom("starts_with_x", func(fl basevalidator.FieldLevel) bool {
-		return len(fl.Field().String()) > 0 && fl.Field().String()[0] == 'x'
+		value := fl.Field().String()
+		return value != "" && value[0] == 'x'
 	})
 	require.NoError(t, err)
 

@@ -31,7 +31,9 @@ func Load[T any](path string) (*T, error) {
 		}
 	}
 
-	bindEnvs(v, reflect.TypeFor[T](), "")
+	if err := bindEnvs(v, reflect.TypeFor[T](), ""); err != nil {
+		return nil, fmt.Errorf("config: %w", err)
+	}
 	cfg := new(T)
 
 	if err := v.Unmarshal(cfg); err != nil {
@@ -46,13 +48,13 @@ func Load[T any](path string) (*T, error) {
 	return cfg, nil
 }
 
-func bindEnvs(v *viper.Viper, t reflect.Type, prefix string) {
+func bindEnvs(v *viper.Viper, t reflect.Type, prefix string) error {
 	if t.Kind() == reflect.Pointer {
 		t = t.Elem()
 	}
 
 	if t.Kind() != reflect.Struct {
-		return
+		return nil
 	}
 
 	for field := range t.Fields() {
@@ -73,12 +75,18 @@ func bindEnvs(v *viper.Viper, t reflect.Type, prefix string) {
 		}
 
 		if fieldType.Kind() == reflect.Struct && fieldType != reflect.TypeFor[time.Time]() {
-			bindEnvs(v, fieldType, key)
+			if err := bindEnvs(v, fieldType, key); err != nil {
+				return err
+			}
 			continue
 		}
 
 		if envKey := field.Tag.Get("env"); envKey != "" {
-			v.BindEnv(key, envKey)
+			if err := v.BindEnv(key, envKey); err != nil {
+				return fmt.Errorf("bind env %s to %s: %w", envKey, key, err)
+			}
 		}
 	}
+
+	return nil
 }

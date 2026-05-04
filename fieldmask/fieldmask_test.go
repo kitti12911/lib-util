@@ -299,7 +299,7 @@ func messageField(name string, number int32, typeName string) *descriptorpb.Fiel
 	}
 }
 
-func setString(msg *dynamicpb.Message, name string, value string) {
+func setString(msg *dynamicpb.Message, name, value string) {
 	msg.Set(field(msg.Descriptor(), name), protoreflect.ValueOfString(value))
 }
 
