@@ -36,6 +36,7 @@ jobs:
               with:
                   go-version-file: go.mod
                   cache: true
+                  cache-dependency-path: go.sum
 
             - name: Go vet
               run: go vet ./...
@@ -58,6 +59,7 @@ jobs:
               with:
                   go-version-file: go.mod
                   cache: true
+                  cache-dependency-path: go.sum
 
             - name: Test with race detector and coverage
               run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
@@ -76,6 +78,7 @@ jobs:
               with:
                   go-version-file: go.mod
                   cache: true
+                  cache-dependency-path: go.sum
 
             - name: govulncheck
               run: go run golang.org/x/vuln/cmd/govulncheck@v1.3.0 ./...
