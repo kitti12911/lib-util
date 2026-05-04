@@ -1,16 +1,37 @@
 # lib-util
 
-shared Go utility library used across homelab services. provides config loading, structured logging, validation, pagination, formatting, and pointer utilities.
+shared Go utility library used across homelab services. provides config
+loading, structured logging, validation, pagination, field masks, formatting,
+and pointer utilities.
 
 ## install
 
 ```bash
-go get github.com/kitti12911/lib-util/v2
+go get github.com/kitti12911/lib-util/v3
 ```
 
 ## observability
 
-profiling and tracing now live in `github.com/kitti12911/lib-monitor`. use `github.com/kitti12911/lib-monitor/profiling` and `github.com/kitti12911/lib-monitor/tracing` for new code.
+profiling and tracing now live in
+[`github.com/kitti12911/lib-monitor`](https://github.com/kitti12911/lib-monitor).
+use `github.com/kitti12911/lib-monitor/profiling` and
+`github.com/kitti12911/lib-monitor/tracing` for new code.
+
+## project structure
+
+```bash
+lib-util/
+├── config/       # type-safe config loading
+├── fieldmask/    # protobuf field mask validation and extraction
+├── formatter/    # JSON/string formatting helpers
+├── logger/       # slog setup and trace context logging
+├── pagination/   # page, limit, offset, and response metadata helpers
+├── ptr/          # pointer helpers
+├── validator/    # go-playground validator wrapper
+├── Makefile
+├── go.mod
+└── README.md
+```
 
 ## packages
 
@@ -19,7 +40,7 @@ profiling and tracing now live in `github.com/kitti12911/lib-monitor`. use `gith
 type-safe config loading from file with environment variable overrides and validation.
 
 ```go
-import libconfig "github.com/kitti12911/lib-util/v2/config"
+import libconfig "github.com/kitti12911/lib-util/v3/config"
 
 type Config struct {
     Port int    `mapstructure:"port" env:"PORT" validate:"required"`
@@ -39,7 +60,7 @@ cfg, err := libconfig.Load[Config]("config.yml")
 structured JSON logging built on Go's `slog`. supports opentelemetry trace context injection.
 
 ```go
-import "github.com/kitti12911/lib-util/v2/logger"
+import "github.com/kitti12911/lib-util/v3/logger"
 
 logger.NewFromConfig(logger.Config{
     Level:          logger.LevelInfo,
@@ -64,7 +85,7 @@ options:
 struct validation with structured error reporting. wraps `go-playground/validator/v10`.
 
 ```go
-import libvalidator "github.com/kitti12911/lib-util/v2/validator"
+import libvalidator "github.com/kitti12911/lib-util/v3/validator"
 
 v := libvalidator.New()
 
@@ -87,7 +108,7 @@ v.RegisterCustom("my_tag", func(fl validator.FieldLevel) bool {
 JSON formatting helpers for debug output, logs, and safe string conversion.
 
 ```go
-import "github.com/kitti12911/lib-util/v2/formatter"
+import "github.com/kitti12911/lib-util/v3/formatter"
 
 text, err := formatter.ToJSONStr(payload, true) // pretty-printed JSON
 ```
@@ -101,7 +122,7 @@ text, err := formatter.ToJSONStr(payload, true) // pretty-printed JSON
 small helpers for converting page/pageSize input into limit/offset and response metadata.
 
 ```go
-import "github.com/kitti12911/lib-util/v2/pagination"
+import "github.com/kitti12911/lib-util/v3/pagination"
 
 input := pagination.ParseInput(page, pageSize)
 items, total, err := repo.Find(ctx, input.Limit, input.Offset)
@@ -113,12 +134,33 @@ output := pagination.CalcOutput(page, pageSize, total)
 | `ParseInput(page, pageSize)`        | normalize page input into limit and offset |
 | `CalcOutput(page, pageSize, total)` | calculate response pagination metadata     |
 
+### fieldmask
+
+protobuf field mask helpers for PATCH-style APIs.
+
+```go
+import "github.com/kitti12911/lib-util/v3/fieldmask"
+
+immutable := map[string]bool{
+    "id":         true,
+    "created_at": true,
+}
+
+if err := fieldmask.ValidateMask(req.GetUpdateMask(), req.GetUser(), immutable); err != nil {
+    return err
+}
+```
+
+- `ValidateMask(mask, msg, immutable)`: reject empty masks, unknown fields, and messages
+- `ExtractChanges(mask, msg)`: read masked protobuf values into a map
+- `ExtractNestedChanges(changes, fields, n)`: select one nested object from extracted changes
+
 ### ptr
 
 pointer helper functions for safely dereferencing pointers with fallback values.
 
 ```go
-import "github.com/kitti12911/lib-util/v2/ptr"
+import "github.com/kitti12911/lib-util/v3/ptr"
 
 name := ptr.ValueOr(input.Name, "unnamed") // returns "unnamed" if input.Name is nil
 limit := ptr.From(input.Limit)             // returns 0 if input.Limit is nil
