@@ -2,7 +2,7 @@
 
 shared Go utility library used across homelab services. provides config
 loading, structured logging, validation, pagination, field masks, formatting,
-and pointer utilities.
+Huma helpers, protobuf helpers, query parsing, and pointer utilities.
 
 ## install
 
@@ -21,12 +21,16 @@ use `github.com/kitti12911/lib-monitor/profiling` and
 
 ```bash
 lib-util/
+├── apperror/    # transport-neutral application error helpers
 ├── config/       # type-safe config loading
 ├── fieldmask/    # protobuf field mask validation and extraction
 ├── formatter/    # JSON/string formatting helpers
+├── huma/         # Huma response, PATCH, and gRPC error helpers
 ├── logger/       # slog setup and trace context logging
 ├── pagination/   # page, limit, offset, and response metadata helpers
+├── protoutil/    # protobuf conversion helpers
 ├── ptr/          # pointer helpers
+├── query/        # string query parsing helpers
 ├── validator/    # go-playground validator wrapper
 ├── Makefile
 ├── go.mod
@@ -34,6 +38,27 @@ lib-util/
 ```
 
 ## packages
+
+### apperror
+
+transport-neutral application errors for service/domain layers.
+
+```go
+import "github.com/kitti12911/lib-util/v3/apperror"
+
+return apperror.InvalidInput("invalid request", err)
+```
+
+| function/type          | description                                  |
+| ---------------------- | -------------------------------------------- |
+| `Error`                | typed application error with message + cause |
+| `Code`                 | stable application error category            |
+| `Internal(message, e)` | create internal error                        |
+| `NotFound(message, e)` | create not found error                       |
+| `AlreadyExist(...)`    | create duplicate resource error              |
+| `InvalidInput(...)`    | create validation/input error                |
+| `Unauthorized(...)`    | create authentication error                  |
+| `Forbidden(...)`       | create authorization error                   |
 
 ### config
 
@@ -154,6 +179,55 @@ if err := fieldmask.ValidateMask(req.GetUpdateMask(), req.GetUser(), immutable);
 - `ValidateMask(mask, msg, immutable)`: reject empty masks, unknown fields, and messages
 - `ExtractChanges(mask, msg)`: read masked protobuf values into a map
 - `ExtractNestedChanges(changes, fields, n)`: select one nested object from extracted changes
+
+### huma
+
+small helpers for Huma-based HTTP APIs.
+
+```go
+import humautil "github.com/kitti12911/lib-util/v3/huma"
+
+huma.Patch(api, "/users/{id}", handler, humautil.WithTag("Users"))
+```
+
+| function/type        | description                                       |
+| -------------------- | ------------------------------------------------- |
+| `Patch[T]`           | tri-state PATCH value: omitted, null, or value    |
+| `GRPCError(err)`     | map common gRPC status errors to Huma HTTP errors |
+| `WithTag(tag)`       | set one OpenAPI operation tag                     |
+| `StatusCreated(op)`  | set default response status to 201                |
+| `AffectedRows(rows)` | build a common affected rows response body        |
+
+### protoutil
+
+protobuf conversion helpers.
+
+```go
+import "github.com/kitti12911/lib-util/v3/protoutil"
+
+createdAt := protoutil.TimeFromProto(resp.GetCreatedAt())
+```
+
+| function               | description                                  |
+| ---------------------- | -------------------------------------------- |
+| `TimeFromProto(value)` | convert protobuf timestamp to Go `time.Time` |
+
+### query
+
+string parsers for API query parameters that map to the shared query enum
+numbers used by `proto-sandbox`.
+
+```go
+import "github.com/kitti12911/lib-util/v3/query"
+
+op := query.FilterOpFromString[commonv1.FilterOp]("like_ci")
+direction := query.OrderDirectionFromString[commonv1.OrderDirection]("desc")
+```
+
+| function                      | description                                  |
+| ----------------------------- | -------------------------------------------- |
+| `FilterOpFromString[O](op)`   | parse exact, like, gt, lt, null, in, between |
+| `OrderDirectionFromString[O]` | parse asc or desc                            |
 
 ### ptr
 
