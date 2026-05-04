@@ -8,7 +8,6 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-// test 2
 type Level string
 
 const (
