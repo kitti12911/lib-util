@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/kitti12911/lib-util/compare/v3.2.0...v3.3.0) (2026-05-04)
+
+
+### Features
+
+* add linting/security check ([3ea410a](https://github.com/kitti12911/lib-util/commit/3ea410a95722c5897e5cfda16a2b5b8d0c8a9b75))
+
 ## [3.2.0](https://github.com/kitti12911/lib-util/compare/v3.1.0...v3.2.0) (2026-05-04)
 
 
