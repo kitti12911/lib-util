@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/kitti12911/lib-util/compare/v3.0.1...v3.1.0) (2026-05-04)
+
+
+### Features
+
+* add 'apperror', 'huma' helper function, filtering and sorting 'query', and 'protoutil' ([66ae5a5](https://github.com/kitti12911/lib-util/commit/66ae5a5a4e80a664b73a47f4af4e69f570fdab0e))
+
 ## [3.0.1](https://github.com/kitti12911/lib-util/compare/v3.0.0...v3.0.1) (2026-05-03)
 
 
