@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.0](https://github.com/kitti12911/lib-util/compare/v3.5.0...v3.6.0) (2026-05-06)
+
+
+### Features
+
+* add pipeline cancellation when new pipeline in same branch detected ([#28](https://github.com/kitti12911/lib-util/issues/28)) ([d812583](https://github.com/kitti12911/lib-util/commit/d81258381940de3e604a96221dc6f6bb62ec226d))
+
 ## [3.5.0](https://github.com/kitti12911/lib-util/compare/v3.4.0...v3.5.0) (2026-05-06)
 
 
