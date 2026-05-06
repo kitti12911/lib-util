@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.5.0](https://github.com/kitti12911/lib-util/compare/v3.4.0...v3.5.0) (2026-05-06)
+
+
+### Features
+
+* add code coverage summary ([8acb436](https://github.com/kitti12911/lib-util/commit/8acb436f4e470c516992ff39f82a94b7c8ba028f))
+* add more cache ([330a1fc](https://github.com/kitti12911/lib-util/commit/330a1fc845e0622f6101014e60d03eeae501cd32))
+* release please will check if go ci is success or not before perform action ([#26](https://github.com/kitti12911/lib-util/issues/26)) ([9e29206](https://github.com/kitti12911/lib-util/commit/9e29206c3afb929b365d06728e273b7aaaa86ba9))
+
 ## [3.4.0](https://github.com/kitti12911/lib-util/compare/v3.3.0...v3.4.0) (2026-05-04)
 
 
