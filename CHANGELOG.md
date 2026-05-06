@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.0](https://github.com/kitti12911/lib-util/compare/v3.6.0...v3.7.0) (2026-05-06)
+
+
+### Features
+
+* apply 'security-toolchain' to reduce actions time ([#30](https://github.com/kitti12911/lib-util/issues/30)) ([6ad4d87](https://github.com/kitti12911/lib-util/commit/6ad4d87360b9fca759b54ecc5805b73f4c1d87ae))
+
 ## [3.6.0](https://github.com/kitti12911/lib-util/compare/v3.5.0...v3.6.0) (2026-05-06)
 
 
