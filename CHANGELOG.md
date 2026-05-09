@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.8.0](https://github.com/kitti12911/lib-util/compare/v3.7.0...v3.8.0) (2026-05-09)
+
+
+### Features
+
+* update toolchain ([69a4470](https://github.com/kitti12911/lib-util/commit/69a4470bd8782eb922e24030da66db4bba805c02))
+
 ## [3.7.0](https://github.com/kitti12911/lib-util/compare/v3.6.0...v3.7.0) (2026-05-06)
 
 
