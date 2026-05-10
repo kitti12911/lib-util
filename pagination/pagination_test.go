@@ -61,6 +61,13 @@ func TestCalcOutput(t *testing.T) {
 			total:    0,
 			want:     PageOutput{Page: 1, PageSize: 10, TotalPages: 0, TotalSize: 0},
 		},
+		{
+			name:     "clamps totals to max int32",
+			page:     1,
+			pageSize: 1,
+			total:    int64(maxInt32) + 1,
+			want:     PageOutput{Page: 1, PageSize: 1, TotalPages: maxInt32, TotalSize: maxInt32},
+		},
 	}
 
 	for _, tt := range tests {
