@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-repo_dir="${GITHUB_WORKSPACE:-${CI_PROJECT_DIR:-$(pwd)}}"
+repo_dir="${CI_PROJECT_DIR:-$(pwd)}"
 cd "${repo_dir}"
 
 git config --global --add safe.directory "${repo_dir}" 2>/dev/null || true

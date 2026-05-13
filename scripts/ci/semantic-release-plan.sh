@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-repo_dir="${GITHUB_WORKSPACE:-${CI_PROJECT_DIR:-$(pwd)}}"
+repo_dir="${CI_PROJECT_DIR:-$(pwd)}"
 cd "${repo_dir}"
 
 git config --global --add safe.directory "${repo_dir}" 2>/dev/null || true
@@ -41,9 +41,9 @@ if [ -n "${tag_name}" ]; then
 	echo "tag_name=${tag_name}"
 fi
 
-if [ -n "${GITHUB_OUTPUT:-}" ]; then
+if [ -n "${CI_OUTPUT_FILE:-}" ]; then
 	{
 		echo "release_created=${release_created}"
 		echo "tag_name=${tag_name}"
-	} >>"${GITHUB_OUTPUT}"
+	} >>"${CI_OUTPUT_FILE}"
 fi
