@@ -31,7 +31,9 @@ jobs:
                   fetch-depth: 0
 
             - name: Pin tested commit
-              run: git reset --hard "${RELEASE_SHA}"
+              run: |
+                  git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+                  git reset --hard "${RELEASE_SHA}"
               env:
                   RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
 
