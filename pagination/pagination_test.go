@@ -25,6 +25,12 @@ func TestParseInput(t *testing.T) {
 			pageSize: 25,
 			want:     PageInput{Limit: 25, Offset: 50},
 		},
+		{
+			name:     "negative inputs use defaults",
+			page:     -5,
+			pageSize: -1,
+			want:     PageInput{Limit: DefaultPageSize, Offset: 0},
+		},
 	}
 
 	for _, tt := range tests {
@@ -67,6 +73,20 @@ func TestCalcOutput(t *testing.T) {
 			pageSize: 1,
 			total:    int64(maxInt32) + 1,
 			want:     PageOutput{Page: 1, PageSize: 1, TotalPages: maxInt32, TotalSize: maxInt32},
+		},
+		{
+			name:     "exact multiple of page size",
+			page:     1,
+			pageSize: 10,
+			total:    20,
+			want:     PageOutput{Page: 1, PageSize: 10, TotalPages: 2, TotalSize: 20},
+		},
+		{
+			name:     "negative total clamps to zero",
+			page:     1,
+			pageSize: 10,
+			total:    -5,
+			want:     PageOutput{Page: 1, PageSize: 10, TotalPages: 0, TotalSize: 0},
 		},
 	}
 

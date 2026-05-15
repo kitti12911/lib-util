@@ -43,6 +43,9 @@ func (val *Validator) Validate(s any) error {
 	return val.v.Struct(s)
 }
 
+// ValidateWithErrors validates s and returns per-field violations. A non-nil
+// error indicates a systemic failure (e.g. s is not a struct); validation
+// failures are reported via the violations slice with a nil error.
 func (val *Validator) ValidateWithErrors(s any) ([]FieldViolation, error) {
 	err := val.v.Struct(s)
 	if err == nil {
@@ -62,7 +65,7 @@ func (val *Validator) ValidateWithErrors(s any) ([]FieldViolation, error) {
 			Condition: fe.Param(),
 		}
 	}
-	return violations, err
+	return violations, nil
 }
 
 func (val *Validator) RegisterCustom(tag string, fn validator.Func, callIfNull ...bool) error {

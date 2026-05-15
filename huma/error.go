@@ -13,7 +13,7 @@ func GRPCError(err error) error {
 	}
 
 	switch st.Code() {
-	case codes.InvalidArgument:
+	case codes.InvalidArgument, codes.OutOfRange:
 		return basehuma.Error400BadRequest(st.Message(), err)
 	case codes.Unauthenticated:
 		return basehuma.Error401Unauthorized(st.Message(), err)
@@ -23,8 +23,16 @@ func GRPCError(err error) error {
 		return basehuma.Error404NotFound(st.Message(), err)
 	case codes.AlreadyExists, codes.Aborted:
 		return basehuma.Error409Conflict(st.Message(), err)
+	case codes.FailedPrecondition:
+		return basehuma.Error412PreconditionFailed(st.Message(), err)
+	case codes.ResourceExhausted:
+		return basehuma.Error429TooManyRequests(st.Message(), err)
+	case codes.Unimplemented:
+		return basehuma.Error501NotImplemented(st.Message(), err)
 	case codes.Unavailable:
 		return basehuma.Error503ServiceUnavailable(st.Message(), err)
+	case codes.DeadlineExceeded:
+		return basehuma.Error504GatewayTimeout(st.Message(), err)
 	default:
 		return err
 	}

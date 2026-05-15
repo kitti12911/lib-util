@@ -47,7 +47,7 @@ func TestValidateWithErrors(t *testing.T) {
 	val := New()
 
 	violations, err := val.ValidateWithErrors(sampleConfig{})
-	require.Error(t, err)
+	require.NoError(t, err)
 	require.Len(t, violations, 4)
 
 	wantFields := map[string]bool{

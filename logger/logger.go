@@ -69,6 +69,9 @@ func WithTrace() Option {
 	}
 }
 
+// NewFromConfig builds a logger from Config and installs it as the process-wide
+// default slog logger. Intended for one-time application startup; use New for
+// loggers that should not mutate global state.
 func NewFromConfig(cfg Config, serviceName string) *slog.Logger {
 	opts := []Option{
 		WithLevel(cfg.Level),
@@ -86,10 +89,13 @@ func NewFromConfig(cfg Config, serviceName string) *slog.Logger {
 		opts = append(opts, WithTrace())
 	}
 
-	return New(opts...)
+	l := New(opts...)
+	SetDefault(l)
+	return l
 }
 
 // New creates a new JSON-formatted slog.Logger with the given options.
+// It does not mutate the process-wide default logger; call SetDefault for that.
 func New(opts ...Option) *slog.Logger {
 	options := &Options{
 		Level: LevelInfo,
@@ -116,10 +122,13 @@ func New(opts ...Option) *slog.Logger {
 		baseHandler = &traceHandler{handler: baseHandler}
 	}
 
-	l := slog.New(baseHandler)
-	slog.SetDefault(l)
+	return slog.New(baseHandler)
+}
 
-	return l
+// SetDefault installs l as the process-wide default slog logger. Call this
+// once during application startup.
+func SetDefault(l *slog.Logger) {
+	slog.SetDefault(l)
 }
 
 type traceHandler struct {

@@ -66,6 +66,28 @@ func TestLoadNonStruct(t *testing.T) {
 	assert.ErrorContains(t, err, "config: unmarshal")
 }
 
+func TestLoadEnvCoercionFailure(t *testing.T) {
+	t.Setenv("TEST_PORT", "not-a-number")
+	t.Setenv("TEST_HOST", "localhost")
+	t.Setenv("TEST_NESTED_NAME", "n")
+
+	_, err := Load[testConfig]("")
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "config: unmarshal")
+}
+
+func TestLoadMissingOptionalFieldsZeroValue(t *testing.T) {
+	t.Setenv("TEST_HOST", "localhost")
+	t.Setenv("TEST_PORT", "8080")
+	t.Setenv("TEST_NESTED_NAME", "n")
+
+	cfg, err := Load[testConfig]("")
+	require.NoError(t, err)
+	assert.Equal(t, time.Duration(0), cfg.Timeout)
+	assert.Nil(t, cfg.Pointer)
+	assert.Equal(t, "", cfg.Ignored)
+}
+
 func TestBindEnvsPointerType(t *testing.T) {
 	t.Setenv("TEST_HOST", "localhost")
 	t.Setenv("TEST_PORT", "8080")

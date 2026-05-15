@@ -68,6 +68,71 @@ func TestNewAndNewFromConfig(t *testing.T) {
 	assert.Contains(t, out, `"service":"svc-from-config"`)
 }
 
+func TestNewDoesNotMutateDefault(t *testing.T) {
+	original := slog.Default()
+	t.Cleanup(func() { slog.SetDefault(original) })
+
+	sentinel := slog.New(slog.NewJSONHandler(io.Discard, nil))
+	slog.SetDefault(sentinel)
+
+	_ = New(WithLevel(LevelDebug))
+	assert.Same(t, sentinel, slog.Default(), "New must not mutate slog default")
+}
+
+func TestNewFromConfigSetsDefault(t *testing.T) {
+	original := slog.Default()
+	t.Cleanup(func() { slog.SetDefault(original) })
+
+	slog.SetDefault(slog.New(slog.NewJSONHandler(io.Discard, nil)))
+
+	captureStdout(t, func() {
+		l := NewFromConfig(Config{Level: LevelInfo}, "init")
+		assert.Same(t, l, slog.Default(), "NewFromConfig must install l as the default")
+	})
+}
+
+func TestSetDefault(t *testing.T) {
+	original := slog.Default()
+	t.Cleanup(func() { slog.SetDefault(original) })
+
+	target := slog.New(slog.NewJSONHandler(io.Discard, nil))
+	SetDefault(target)
+	assert.Same(t, target, slog.Default())
+}
+
+func TestTraceHandlerPartialSpan(t *testing.T) {
+	tests := []struct {
+		name          string
+		ctx           context.Context
+		wantTrace     bool
+		wantSpan      bool
+	}{
+		{
+			name:      "trace id only",
+			ctx:       trace.ContextWithSpanContext(context.Background(), trace.NewSpanContext(trace.SpanContextConfig{TraceID: trace.TraceID{1}})),
+			wantTrace: true,
+			wantSpan:  false,
+		},
+		{
+			name:      "span id only",
+			ctx:       trace.ContextWithSpanContext(context.Background(), trace.NewSpanContext(trace.SpanContextConfig{SpanID: trace.SpanID{1}})),
+			wantTrace: false,
+			wantSpan:  true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var out bytes.Buffer
+			h := &traceHandler{handler: slog.NewJSONHandler(&out, nil)}
+			require.NoError(t, h.Handle(tt.ctx, slog.NewRecord(time.Time{}, slog.LevelInfo, "x", 0)))
+
+			assert.Equal(t, tt.wantTrace, bytes.Contains(out.Bytes(), []byte(`"trace_id"`)))
+			assert.Equal(t, tt.wantSpan, bytes.Contains(out.Bytes(), []byte(`"span_id"`)))
+		})
+	}
+}
+
 func TestTraceHandlerWithoutSpan(t *testing.T) {
 	var out bytes.Buffer
 	h := &traceHandler{handler: slog.NewJSONHandler(&out, nil)}

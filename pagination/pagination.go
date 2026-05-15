@@ -15,14 +15,18 @@ type PageOutput struct {
 	TotalSize  int32
 }
 
-func ParseInput(page, pageSize int32) PageInput {
+func normalize(page, pageSize int32) (int32, int32) {
 	if pageSize <= 0 {
 		pageSize = DefaultPageSize
 	}
 	if page <= 0 {
 		page = 1
 	}
+	return page, pageSize
+}
 
+func ParseInput(page, pageSize int32) PageInput {
+	page, pageSize = normalize(page, pageSize)
 	return PageInput{
 		Limit:  int(pageSize),
 		Offset: int((page - 1) * pageSize),
@@ -30,12 +34,7 @@ func ParseInput(page, pageSize int32) PageInput {
 }
 
 func CalcOutput(page, pageSize int32, total int64) PageOutput {
-	if pageSize <= 0 {
-		pageSize = DefaultPageSize
-	}
-	if page <= 0 {
-		page = 1
-	}
+	page, pageSize = normalize(page, pageSize)
 
 	totalPages := int64(0)
 	if total > 0 {
