@@ -102,10 +102,10 @@ func TestSetDefault(t *testing.T) {
 
 func TestTraceHandlerPartialSpan(t *testing.T) {
 	tests := []struct {
-		name          string
-		ctx           context.Context
-		wantTrace     bool
-		wantSpan      bool
+		name      string
+		ctx       context.Context
+		wantTrace bool
+		wantSpan  bool
 	}{
 		{
 			name:      "trace id only",

@@ -15,7 +15,7 @@ type PageOutput struct {
 	TotalSize  int32
 }
 
-func normalize(page, pageSize int32) (int32, int32) {
+func normalize(page, pageSize int32) (normalizedPage, normalizedPageSize int32) {
 	if pageSize <= 0 {
 		pageSize = DefaultPageSize
 	}
