@@ -1,6 +1,6 @@
 module github.com/kitti12911/lib-util/v3
 
-go 1.26.2
+go 1.26.3
 
 require (
 	github.com/danielgtaylor/huma/v2 v2.37.3
