@@ -20,6 +20,10 @@ const (
 	OrderDirectionUnspecified int32 = 0
 	OrderDirectionAsc         int32 = 1
 	OrderDirectionDesc        int32 = 2
+
+	LogicalOpUnspecified int32 = 0
+	LogicalOpAnd         int32 = 1
+	LogicalOpOr          int32 = 2
 )
 
 func FilterOpFromString[O ~int32](op string) O {
@@ -56,4 +60,11 @@ func OrderDirectionFromString[O ~int32](direction string) O {
 		return O(OrderDirectionDesc)
 	}
 	return O(OrderDirectionAsc)
+}
+
+func LogicalOpFromString[L ~int32](op string) L {
+	if strings.EqualFold(op, "or") {
+		return L(LogicalOpOr)
+	}
+	return L(LogicalOpAnd)
 }

@@ -37,3 +37,10 @@ func TestOrderDirectionFromString(t *testing.T) {
 	assert.Equal(t, OrderDirectionDesc, OrderDirectionFromString[int32]("desc"))
 	assert.Equal(t, OrderDirectionDesc, OrderDirectionFromString[int32]("DESC"))
 }
+
+func TestLogicalOpFromString(t *testing.T) {
+	assert.Equal(t, LogicalOpAnd, LogicalOpFromString[int32](""))
+	assert.Equal(t, LogicalOpAnd, LogicalOpFromString[int32]("and"))
+	assert.Equal(t, LogicalOpOr, LogicalOpFromString[int32]("or"))
+	assert.Equal(t, LogicalOpOr, LogicalOpFromString[int32]("OR"))
+}
