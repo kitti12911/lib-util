@@ -14,10 +14,22 @@ func TestParseInput(t *testing.T) {
 		want     PageInput
 	}{
 		{
-			name:     "defaults",
+			name:     "both zero means no limit",
 			page:     0,
 			pageSize: 0,
-			want:     PageInput{Limit: DefaultPageSize, Offset: 0},
+			want:     PageInput{},
+		},
+		{
+			name:     "page set defaults page size",
+			page:     2,
+			pageSize: 0,
+			want:     PageInput{Limit: DefaultPageSize, Offset: DefaultPageSize},
+		},
+		{
+			name:     "page size set defaults page",
+			page:     0,
+			pageSize: 25,
+			want:     PageInput{Limit: 25, Offset: 0},
 		},
 		{
 			name:     "calculates offset",
@@ -26,10 +38,10 @@ func TestParseInput(t *testing.T) {
 			want:     PageInput{Limit: 25, Offset: 50},
 		},
 		{
-			name:     "negative inputs use defaults",
+			name:     "negative inputs treated as no limit",
 			page:     -5,
 			pageSize: -1,
-			want:     PageInput{Limit: DefaultPageSize, Offset: 0},
+			want:     PageInput{},
 		},
 	}
 
@@ -38,6 +50,14 @@ func TestParseInput(t *testing.T) {
 			assert.Equal(t, tt.want, ParseInput(tt.page, tt.pageSize))
 		})
 	}
+}
+
+func TestRequestNoLimit(t *testing.T) {
+	req := Request{}
+
+	assert.Equal(t, PageInput{}, req.Input())
+	assert.Equal(t, PageOutput{Page: 1, PageSize: 41, TotalPages: 1, TotalSize: 41}, req.Output(41))
+	assert.Equal(t, PageOutput{Page: 1, PageSize: 0, TotalPages: 0, TotalSize: 0}, req.Output(0))
 }
 
 func TestCalcOutput(t *testing.T) {
@@ -49,9 +69,9 @@ func TestCalcOutput(t *testing.T) {
 		want     PageOutput
 	}{
 		{
-			name:  "defaults",
+			name:  "both zero collapses to single page",
 			total: 41,
-			want:  PageOutput{Page: 1, PageSize: DefaultPageSize, TotalPages: 3, TotalSize: 41},
+			want:  PageOutput{Page: 1, PageSize: 41, TotalPages: 1, TotalSize: 41},
 		},
 		{
 			name:     "calculates pages",
